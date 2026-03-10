@@ -18,10 +18,10 @@ collections:
 
   - name: "pages"
     label: "Static Pages"
-    files:
-      - label: "About Page"
-        name: "about"
-        file: "content/about.md"
-        fields:
-          - {label: "Title", name: "title", widget: "string"}
-          - {label: "Content", name: "body", widget: "markdown"}
+    folder: "content" # This change enables the "Add New" button
+    create: true # This is the magic line
+    slug: "{{slug}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Permalink/URL", name: "slug", widget: "string", hint: "Example: portfolio (no spaces)"}
+      - {label: "Body", name: "body", widget: "markdown"}
