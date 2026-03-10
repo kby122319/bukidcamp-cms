@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bukid Camp Fun Run 2026 | Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 font-sans">
+
+    <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow-lg border-t-8 border-orange-500">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-800">🏃‍♂️ Bukid Camp Fun Run 2026</h1>
+            <p class="text-slate-500 mt-2">Join us for a morning of health and community!</p>
+        </header>
+
+        <form id="registrationForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">Full Name</label>
+                <input type="text" name="fullname" required class="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-orange-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">Email Address</label>
+                <input type="email" name="email" required class="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-orange-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">Race Distance</label>
+                <select name="distance" class="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-orange-500 outline-none">
+                    <option value="3K">3K - Family Walk</option>
+                    <option value="5K">5K - Fun Run</option>
+                    <option value="10K">10K - Competitive</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">Shirt Size</label>
+                <div class="flex gap-4 mt-2">
+                    <label><input type="radio" name="shirtsize" value="S" checked> S</label>
+                    <label><input type="radio" name="shirtsize" value="M"> M</label>
+                    <label><input type="radio" name="shirtsize" value="L"> L</label>
+                    <label><input type="radio" name="shirtsize" value="XL"> XL</label>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-md transition duration-200">
+                Register Now
+            </button>
+        </form>
+
+        <div id="successMsg" class="hidden mt-6 p-4 bg-green-100 text-green-700 text-center rounded-md">
+            🎉 Registration successful! See you at the starting line.
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwaok9LTIb4s3QffCL0vMaxNxjU9P7hvQthbk2N201IH8k0sMiURTxDgXuG9TkvFrYF/exec';
+        const form = document.getElementById('registrationForm');
+        const btn = document.getElementById('submitBtn');
+        const msg = document.getElementById('successMsg');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = 'Registering...';
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)
+mode: 'no-cors'})
+                .then(response => {
+                    form.reset();
+                    form.classList.add('hidden');
+                    msg.classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Error!', error.message);
+                    btn.disabled = false;
+                    btn.innerText = 'Register Now';
+                });
+        });
+    </script>
+</body>
+</html>
