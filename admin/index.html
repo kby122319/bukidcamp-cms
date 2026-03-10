@@ -7,6 +7,34 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js">
+      async function buildNavigation() {
+    const nav = document.getElementById('main-nav');
+    try {
+        // Fetch the list of files in the 'content' folder
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/content`);
+        const files = await response.json();
+
+        files.forEach(file => {
+            if (file.name.endsWith('.md')) {
+                const pageSlug = file.name.replace('.md', '');
+                const link = document.createElement('a');
+                link.href = `?page=${pageSlug}`;
+                // Capitalize the first letter for the menu text
+                link.textContent = pageSlug.charAt(0).toUpperCase() + pageSlug.slice(1);
+                link.style.marginRight = "15px";
+                
+                // Insert before the Admin link
+                nav.insertBefore(link, nav.lastElementChild);
+            }
+        });
+    } catch (e) {
+        console.log("Could not load dynamic menu", e);
+    }
+}
+
+// Call this function when the page loads
+buildNavigation();
+    </script>
   </body>
 </html>
