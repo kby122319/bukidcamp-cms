@@ -5,25 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My CMS Website</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #333; }
-        header { border-bottom: 2px solid #eee; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
-        article { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
-        h2 { margin-top: 0; color: #007bff; }
-        .date { color: #888; font-size: 0.9rem; }
-        .admin-link { text-decoration: none; background: #eee; padding: 5px 10px; border-radius: 4px; color: #333; font-size: 0.8rem; }
+        :root {
+    --bg: #ffffff;
+    --text: #333333;
+    --primary: #007bff;
+    --card-bg: #f9f9f9;
+    --border: #eeeeee;
+}
+
+[data-theme="dark"] {
+    --bg: #1a1a1a;
+    --text: #f0f0f0;
+    --primary: #3399ff;
+    --card-bg: #2a2a2a;
+    --border: #444444;
+}
+
+body { 
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background 0.3s ease;
+    max-width: 800px; margin: 0 auto; padding: 20px; 
+}
+
+header { 
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 0; border-bottom: 2px solid var(--border);
+}
+
+nav a { margin-right: 15px; text-decoration: none; color: var(--text); font-weight: bold; }
+nav a:hover { color: var(--primary); }
+
+.controls { display: flex; gap: 10px; align-items: center; }
+
+button#theme-toggle {
+    background: var(--primary); color: white; border: none;
+    padding: 8px 12px; border-radius: 20px; cursor: pointer;
+}
+
+article { 
+    background: var(--card-bg); margin: 30px 0; padding: 25px; 
+    border-radius: 12px; border: 1px solid var(--border); 
+}
+
+h2 { color: var(--primary); margin-top: 0; }
     </style>
+    
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
     <header>
-        <h1>My Personal Blog</h1>
-        <a href="/admin/" class="admin-link">Admin Login</a>
-    </header>
-
-    <div id="content-list">
-        <p>Loading posts...</p>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/admin/" class="admin-link">Admin</a>
+    </nav>
+    
+    <div class="controls">
+        <button id="theme-toggle">🌙 Dark Mode</button>
     </div>
+</header>
+
+<h1>My Digital Garden</h1>
+<div id="content-list"><p>Fetching your stories...</p></div>
 
     <script>
         // 1. Point this to your GitHub Repository "posts" folder
@@ -71,6 +117,27 @@
         }
 
         fetchPosts();
+        const toggleBtn = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme');
+
+// Check for saved user preference
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    toggleBtn.textContent = currentTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+}
+
+toggleBtn.addEventListener('click', () => {
+    let theme = document.documentElement.getAttribute('data-theme');
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        toggleBtn.textContent = '🌙 Dark Mode';
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        toggleBtn.textContent = '☀️ Light Mode';
+    }
+});
     </script>
 </body>
 </html>
