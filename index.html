@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My CMS Website</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #333; }
+        header { border-bottom: 2px solid #eee; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
+        article { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
+        h2 { margin-top: 0; color: #007bff; }
+        .date { color: #888; font-size: 0.9rem; }
+        .admin-link { text-decoration: none; background: #eee; padding: 5px 10px; border-radius: 4px; color: #333; font-size: 0.8rem; }
+    </style>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>My Personal Blog</h1>
+        <a href="/admin/" class="admin-link">Admin Login</a>
+    </header>
+
+    <div id="content-list">
+        <p>Loading posts...</p>
+    </div>
+
+    <script>
+        // 1. Point this to your GitHub Repository "posts" folder
+        const GITHUB_USERNAME = 'kby122319';
+        const REPO_NAME = 'bukidcamp-cms';
+        const API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/posts`;
+
+        async function fetchPosts() {
+            const container = document.getElementById('content-list');
+            try {
+                const response = await fetch(API_URL);
+                const files = await response.json();
+
+                if (!files || files.length === 0) {
+                    container.innerHTML = "<p>No posts found. Go to the Admin page to create one!</p>";
+                    return;
+                }
+
+                container.innerHTML = ''; // Clear loading text
+
+                // 2. Loop through each file in the /posts folder
+                for (const file of files) {
+                    if (file.name.endsWith('.md')) {
+                        const postRes = await fetch(file.download_url);
+                        const content = await postRes.text();
+                        
+                        // Simple parser to grab the Title between the first set of "---"
+                        const title = content.split('title:')[1]?.split('\n')[0] || file.name;
+                        const date = content.split('date:')[1]?.split('\n')[0] || "";
+                        
+                        const article = document.createElement('article');
+                        article.innerHTML = `
+                            <h2>${title}</h2>
+                            <div class="date">${new Date(date).toLocaleDateString()}</div>
+                            <p>${content.split('---').pop().substring(0, 200)}...</p>
+                            <a href="${file.html_url}">View Source on GitHub</a>
+                        `;
+                        container.appendChild(article);
+                    }
+                }
+            } catch (error) {
+                container.innerHTML = "<p>Error loading posts. Make sure your repo is Public!</p>";
+                console.error(error);
+            }
+        }
+
+        fetchPosts();
+    </script>
+</body>
+</html>
