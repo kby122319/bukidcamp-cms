@@ -1,5 +1,6 @@
 backend:
   name: git-gateway
+  repo: kby122319/bukidcamp--cms
   branch: main # or master
 
 media_folder: "images" # Where images will be uploaded
